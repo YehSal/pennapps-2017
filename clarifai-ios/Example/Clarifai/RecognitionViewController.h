@@ -1,7 +1,3 @@
-//
-//  RecognitionViewController.h
-//  ClarifaiApiDemo
-//
 
 @import UIKit;
 

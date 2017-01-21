@@ -1,7 +1,3 @@
-//
-//  AppDelegate.m
-//  ClarifaiApiDemo
-//
 
 #import "AppDelegate.h"
 #import "AFNetworkActivityLogger.h"

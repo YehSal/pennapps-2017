@@ -10,23 +10,52 @@
  * This view controller performs recognition using the Clarifai API.
  * See the README for instructions on running the demo.
  */
-@interface RecognitionViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
+@interface RecognitionViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource>
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
-@property (weak, nonatomic) IBOutlet UITextView *textView;
+@property (weak, nonatomic) IBOutlet UIPickerView *pickerView;
 @property (weak, nonatomic) IBOutlet UIButton *button;
 @property (strong, nonatomic) ClarifaiApp *app;
 @end
 
 
 @implementation RecognitionViewController
+NSArray *_pickerViewData;
+NSString * sentTag;
 
-- (IBAction)buttonPressed:(id)sender {
-    // Show a UIImagePickerController to let the user pick an image from their library.
-    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    picker.allowsEditing = NO;
-    picker.delegate = self;
-    [self presentViewController:picker animated:YES completion:nil];
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    _pickerViewData = @[@"Item 1", @"Item 2", @"Item 3", @"Item 4", @"Item 5", @"Item 6", @"Item 7", @"Item 8", @"Item 9", @"Item 10"];
+    
+    self.pickerView.dataSource = self;
+    self.pickerView.delegate = self;
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+}
+
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+    return 1;
+}
+
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+    return _pickerViewData.count;
+}
+
+- (NSString*)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
+{
+    return _pickerViewData[row];
+}
+
+// Catpure the picker view selection
+- (void)pickerViewSelection:(UIPickerView *)pickerViewSelection didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+    // This method is triggered whenever the user makes a change to the picker selection.
+    // The parameter named row and component represents what was selected.
 }
 
 - (IBAction)cameraAction:(UIButton *)sender {
@@ -37,6 +66,14 @@
     [self presentViewController:picker animated:YES completion:nil];
 }   // Camera shit
 
+- (IBAction)sendTag:(UIButton *)sender {
+    NSInteger row;
+    NSArray *repeatPickerData;
+    UIPickerView *repeatPickerView;
+    
+    row = [repeatPickerView selectedRowInComponent:0];
+    // self.strPrintRepeat = [repeatPickerData objectAtIndex:row];
+}
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -48,7 +85,6 @@
     if (image) {
         // The user picked an image. Send it to Clarifai for recognition.
         self.imageView.image = image;
-        self.textView.text = @"Recognizing...";
         self.button.enabled = NO;
         [self recognizeImage:image];
     }
@@ -75,9 +111,12 @@
                 for (ClarifaiConcept *concept in output.concepts) {
                     [tags addObject:concept.conceptName];
                 }
+                NSArray *array = [tags copy];
+                _pickerViewData = [array copy];
+                /*
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.textView.text = [NSString stringWithFormat:@"Tags:\n%@", [tags componentsJoinedByString:@", "]];
-                });
+                })*/;
             }
         }];
     }];
