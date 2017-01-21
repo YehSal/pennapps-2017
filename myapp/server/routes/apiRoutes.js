@@ -1,0 +1,197 @@
+var express = require('express');
+var router = express.Router();
+var path = require('path');
+var passport = require('passport');
+
+router.get('/check', (req, res) => {
+  res.json({ boi: 'boi' });
+})
+
+router.post('/signup', function(req, res){
+    if (!req.body.name || !req.body.password){
+        res.json({success: false, msg: "Please pass name and password."});
+    }else{
+        var newUser = new User({
+            name: req.body.name,
+            password: req.body.password,
+            diseases: [],
+        });
+
+        newUser.save(function(err){
+            if(err){
+                return res.json({success: false, msg: 'Username already exists.'});
+            }
+            User.findOne({
+              name: req.body.name
+            }, (err, user) => {
+              if (err) throw err;
+              if (!user) {
+                res.send({success: false, msg: 'Authentication faield. User not found'});
+              } else {
+                var token = jwt.encode(user, config.secret);
+                res.json({success: true, token: token});
+              }
+            });
+        });
+    }
+});
+
+router.post('/authenticate', function(req, res){
+
+    User.findOne({
+        name: req.body.name
+    }, function(err, user){
+        if(err) throw err;
+
+        if(!user){
+            res.send({success: false, msg: 'Authentication failed. User not found.'});
+        }else{
+            user.comparePassword(req.body.password, function(err, isMatch){
+                if(isMatch && !err){
+                    var token = jwt.encode(user, config.secret);
+
+                    res.json({success: true, token: 'JWT ' + token});
+                }else{
+                    res.send({success: false, msg: 'Authentication failed. Wrong password.'});
+                }
+            });
+        }
+    });
+});
+
+router.post('/nutrify', function(req, res){
+    if(!req.body || !req.body.food){
+        res.json({success: false, msg: "Must include food to lookup."});
+    }else{
+        console.log(req.body.food);
+        request({
+            url: "https://api.nutritionix.com/v1_1/search/" + req.body.food,
+            qs: {
+                //results: "0:20",
+                //cal_min: "0",
+                //cal_max: "50000",
+                appId: NUTRITIONIX_APPID,
+                appKey: NUTRITIONIX_APPKEY
+            },
+            method: "GET",
+        }, function(error, response, body){
+            var jsonBody = JSON.parse(response.body);
+            if (error) {
+                console.log('Error getting food descriptions: ', error);
+                res.json({success: false, msg: "Error getting food descriptions: "+ error});
+            } else if (response.body.error) {
+                console.log('Error: ', response.body.error);
+                res.json({success: false, msg: "Error getting food descriptions: "+ response.body.error});
+            } else if(jsonBody.hits.length == 0) {
+                res.json({success: false, msg: "Error getting food descriptions: No hits found."});
+            }else{
+                var firstHit = jsonBody.hits[0];
+                //console.log(jsonBody);
+                var hitId = firstHit._id;
+
+                request({
+                    url: "https://api.nutritionix.com/v1_1/item",
+                    qs: {
+                        id: hitId,
+                        appId: NUTRITIONIX_APPID,
+                        appKey: NUTRITIONIX_APPKEY
+                    },
+                    method: "GET",
+                }, function(error_c, response_c, body_c){
+                    response_c.body = JSON.parse(response_c.body);
+                    if (error_c) {
+                        console.log('Error getting food descriptions: ', error_c);
+                        res.json({success: false, msg: "Error getting nutrition values: "+ error_c});
+                    } else if (response_c.body.error) {
+                        console.log('Error: ', response_c.body.error);
+                        res.json({success: false, msg: "Error getting nutrition values: "+ response_c.body.error});
+                    }else{
+                        res.json({success: true, data: response_c.body});
+                    }
+                });
+            }
+        });
+
+    }
+});
+
+router.get('/profile', passport.authenticate('jwt', { session: false}), function(req, res) {
+  var token = getToken(req.headers);
+  console.log("here")
+  if (token) {
+    var decoded = jwt.decode(token, config.secret);
+    User.findOne({
+      name: decoded.name
+    }, function(err, user) {
+        if (err) throw err;
+
+        if (!user) {
+          return res.status(403).send({success: false, msg: 'Authentication failed. User not found.'});
+        } else {
+          res.json({success: true, msg: 'Welcome to your profile, ' + user.name + '!'});
+        }
+    });
+  } else {
+    return res.status(403).send({success: false, msg: 'No token provided.'});
+  }
+});
+
+router.post('/updateData', passport.authenticate('jwt', { session: false}), function(req, res){
+    var token = getToken(req.headers);
+    console.log("here")
+    if (token) {
+        var decoded = jwt.decode(token, config.secret);
+        User.findOne({
+          name: decoded.name
+        }, function(err, user) {
+            if (err) throw err;
+
+            if (!user) {
+              return res.status(403).send({success: false, msg: 'Authentication failed. User not found.'});
+            } else {
+              var newUserObj = req.body;
+              var updateObj = {};
+              //if(newUserObj.name){
+              //  updateObj.name = newUserObj.name;
+              //}
+              if(newUserObj.diseases){
+                updateObj.diseases = JSON.parse(newUserObj.diseases).diseases;
+                console.log(updateObj);
+              }
+
+              var conditions = {_id: user._id};
+
+              if (updateObj.name || updateObj.diseases){
+                User.update(conditions, updateObj, {multi: false}, function(err, numAffected){
+                    if (err){
+                        console.log("Error updating: " + err);
+                    }else{
+                        res.json({success: true, msg: 'Successfully updated ' + user.name + '!'});
+                    }
+                });
+              }else{
+                res.json({success: false, msg: 'No field to update.'});
+              }
+
+            }
+        });
+    } else {
+        return res.status(403).send({success: false, msg: 'No token provided.'});
+    }
+});
+
+getToken = function (headers) {
+  if (headers && headers.authorization) {
+    var parted = headers.authorization.split(' ');
+    console.log("here")
+    if (parted.length === 2) {
+      return parted[1];
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
+};
+
+module.exports = router;

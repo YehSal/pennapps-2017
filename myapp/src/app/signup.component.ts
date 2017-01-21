@@ -16,10 +16,10 @@ export class Signup {
   signup(event, username, password) {
     event.preventDefault();
     let body = JSON.stringify({ username, password });
-    this.http.post('http://localhost:3001/users', body, { headers: contentHeaders })
+    this.http.post('http://localhost:3000/api/signup', body, { headers: contentHeaders })
       .subscribe(
         response => {
-          localStorage.setItem('id_token', response.json().id_token);
+          localStorage.setItem('id_token', response.json().token);
           this.router.navigate(['home']);
         },
         error => {

@@ -1,14 +1,36 @@
 var express = require('express');
+var app = express();
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
-var index = require('./routes/index');
-var users = require('./routes/users');
+var mongoose = require('mongoose');
+var passport = require('passport');
+var flash = require('connect-flash');
+var morgan = require('morgan');
+var session = require('express-session');
+var config = require('./config/database');
+var User = require('./app/models/user');
+var jwt = require('jwt-simple');
+var NutritionixClient = require('nutritionix');
+var NUTRITIONIX_APPID = process.env.NUTRITIONIX_APPID;
+var NUTRITIONIX_APPKEY = process.env.NUTRITIONIX_APPKEY;
+const request = require('request')
 
 var app = express();
+
+var index = require('./routes/index');
+var apiRoutes = require('./routes/apiRoutes');
+
+app.use(morgan('dev'))
+app.use(passport.initialize());
+mongoose.connect(config.database, function(err){
+    if(err){
+        console.log(err);
+    }
+});
+require('./config/passport')(passport);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -24,7 +46,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, '../dist')));
 
-app.use('/users', users);
+app.use('/api', apiRoutes);
 app.use('/', index);
 
 // catch 404 and forward to error handler
