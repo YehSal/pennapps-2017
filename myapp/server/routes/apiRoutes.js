@@ -2,59 +2,62 @@ var express = require('express');
 var router = express.Router();
 var path = require('path');
 var passport = require('passport');
+var User = require('../app/models/user');
+var jwt = require('jwt-simple');
+var config = require('../config/database');
 
 router.get('/check', (req, res) => {
   res.json({ boi: 'boi' });
 })
 
 router.post('/signup', function(req, res){
-    if (!req.body.name || !req.body.password){
-        res.json({success: false, msg: "Please pass name and password."});
-    }else{
-        var newUser = new User({
-            name: req.body.name,
-            password: req.body.password,
-            diseases: [],
-        });
+  if (!req.body.name || !req.body.password){
+      res.json({success: false, msg: "Please pass name and password."});
+  } else {
+    var newUser = new User({
+        name: req.body.name,
+        password: req.body.password,
+        diseases: [],
+    });
 
-        newUser.save(function(err){
-            if(err){
-                return res.json({success: false, msg: 'Username already exists.'});
-            }
-            User.findOne({
-              name: req.body.name
-            }, (err, user) => {
-              if (err) throw err;
-              if (!user) {
-                res.send({success: false, msg: 'Authentication faield. User not found'});
-              } else {
-                var token = jwt.encode(user, config.secret);
-                res.json({success: true, token: token});
-              }
-            });
+    newUser.save(function(err){
+        if(err){
+            return res.json({success: false, msg: 'Username already exists.'});
+        }
+        User.findOne({
+          name: req.body.name
+        }, (err, user) => {
+          if (err) throw err;
+          if (!user) {
+            res.send({success: false, msg: 'Authentication faield. User not found'});
+          } else {
+            var token = jwt.encode(user, config.secret);
+            console.log(token);
+            res.json({success: true, token: token});
+          }
         });
+    });
     }
 });
 
 router.post('/authenticate', function(req, res){
-
     User.findOne({
         name: req.body.name
     }, function(err, user){
         if(err) throw err;
 
         if(!user){
-            res.send({success: false, msg: 'Authentication failed. User not found.'});
+          res.send({success: false, msg: 'Authentication failed. User not found.'});
         }else{
-            user.comparePassword(req.body.password, function(err, isMatch){
-                if(isMatch && !err){
-                    var token = jwt.encode(user, config.secret);
-
-                    res.json({success: true, token: token});
-                }else{
-                    res.send({success: false, msg: 'Authentication failed. Wrong password.'});
-                }
-            });
+          user.comparePassword(req.body.password, function(err, isMatch){
+              if(isMatch && !err){
+                  var token = jwt.encode(user, config.secret);
+                  console.log(token);
+                  res.json({success: true, token: token});
+              }else{
+                  res.send({success: false, msg: 'Authentication failed. Wrong password.'});
+              }
+          });
         }
     });
 });

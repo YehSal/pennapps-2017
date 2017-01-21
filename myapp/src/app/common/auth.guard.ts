@@ -9,7 +9,7 @@ export class AuthGuard implements CanActivate {
   canActivate() {
     // check to see if user has valid jmt
     if (tokenNotExpired()) {
-      console.log('here')
+      console.log('User is logged in')
       return true;
     }
     // otherwise, redirect to login

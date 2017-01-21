@@ -13,12 +13,14 @@ export class Signup {
 
   }
 
-  signup(event, username, password) {
+  signup(event, name, password) {
     event.preventDefault();
-    let body = JSON.stringify({ username, password });
+    let body = JSON.stringify({ name, password });
+    console.log(body);
     this.http.post('http://localhost:3000/api/signup', body, { headers: contentHeaders })
       .subscribe(
         response => {
+          console.log('successfully logged in' + response.json().token);
           localStorage.setItem('id_token', response.json().token);
           this.router.navigate(['home']);
         },

@@ -13,12 +13,13 @@ export class Login {
 
   }
 
-  login(event, username, password) {
+  login(event, name, password) {
     event.preventDefault();
-    let body = JSON.stringify({ username, password });
+    let body = JSON.stringify({ name, password });
     this.http.post('http://localhost:3000/api/authenticate', body, { headers: contentHeaders })
       .subscribe(
         response => {
+          console.log('logged in '+ response.json().token)
           localStorage.setItem('id_token', response.json().token);
           this.router.navigate(['home']);
         },
