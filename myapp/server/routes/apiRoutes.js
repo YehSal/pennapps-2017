@@ -50,7 +50,7 @@ router.post('/authenticate', function(req, res){
                 if(isMatch && !err){
                     var token = jwt.encode(user, config.secret);
 
-                    res.json({success: true, token: 'JWT ' + token});
+                    res.json({success: true, token: token});
                 }else{
                     res.send({success: false, msg: 'Authentication failed. Wrong password.'});
                 }
@@ -183,12 +183,13 @@ router.post('/updateData', passport.authenticate('jwt', { session: false}), func
 getToken = function (headers) {
   if (headers && headers.authorization) {
     var parted = headers.authorization.split(' ');
-    console.log("here")
-    if (parted.length === 2) {
-      return parted[1];
-    } else {
-      return null;
-    }
+    //console.log("here")
+    //if (parted.length === 2) {
+    //  return parted[1];
+    //} else {
+    //  return null;
+    //}
+    return headers.authorization
   } else {
     return null;
   }

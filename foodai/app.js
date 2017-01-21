@@ -109,7 +109,21 @@ apiRoutes.post('/signup', function(req, res){
             if(err){
                 return res.json({success: false, msg: 'Username already exists.'});
             }
-            res.json({success: true, msg: "Successfully created new user."});
+            User.findOne({
+                name: req.body.name
+            }, function(err, user){
+                if(err) throw err;
+
+                if(!user){
+                    res.send({success: false, msg: 'Authentication failed. User not found.'});
+                }else{
+                    
+                    var token = jwt.encode(user, config.secret);
+                    res.json({success: true, token: 'JWT ' + token});
+                        
+                }
+            });
+            //res.json({success: true, msg: "Successfully created new user."});
         });
     }
 });
