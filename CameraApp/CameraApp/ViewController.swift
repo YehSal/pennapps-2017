@@ -20,21 +20,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             imagePicker.delegate = self
             imagePicker.sourceType = UIImagePickerControllerSourceType.camera;   // Use the camera
             imagePicker.allowsEditing = false
-            self.present(imagePicker, animated: true, completion: nil)
+            self.present(imagePicker, animated: true, completion: nil)      // UIImage! gives us the unwrapped image
         }
-    }
-    
-    
-    @IBOutlet weak var ImageDisplay: UIImageView!
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo:[NSObject : AnyObject]!) {
