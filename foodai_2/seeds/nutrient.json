@@ -1,0 +1,9 @@
+[{
+	"name": "fat",
+	"threshold": 26
+},
+{
+	"name": "sodium",
+	"threshold": 0.7
+}
+]
