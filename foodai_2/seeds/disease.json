@@ -1,0 +1,21 @@
+[{
+	"name": "high_blood_pressure",
+	"nutrients_to_avoid": [
+		{"name": "fat" , "threshold": 26},
+		{"name": "sodium", "threshold": 0.7}
+	]
+},
+{
+	"name": "diabetes",
+	"nutrients_to_avoid": [
+		{"name": "fat" , "threshold": 26},
+		{"name": "sodium", "threshold": 0.7}
+	]
+},
+{
+	"name": "heart_disease",
+	"nutrients_to_avoid": [
+		{"name": "fat" , "threshold": 26},
+		{"name": "sodium", "threshold": 0.7}
+]}
+]
