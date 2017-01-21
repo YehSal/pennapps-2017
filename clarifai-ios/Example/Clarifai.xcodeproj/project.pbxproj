@@ -17,8 +17,6 @@
 		408D39691BACA1FA00C5608B /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 408D39671BACA1FA00C5608B /* LaunchScreen.xib */; };
 		408D39751BACA1FA00C5608B /* ClarifaiTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 408D39741BACA1FA00C5608B /* ClarifaiTests.m */; };
 		FB714F801CFBE7A6007FD7E3 /* CAIFuture.m in Sources */ = {isa = PBXBuildFile; fileRef = FB714F7F1CFBE7A6007FD7E3 /* CAIFuture.m */; };
-		FB714F871CFBF15C007FD7E3 /* geth.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FB714F861CFBF15C007FD7E3 /* geth.jpg */; };
-		FB714F891CFBF189007FD7E3 /* geth.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FB714F861CFBF15C007FD7E3 /* geth.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,7 +53,6 @@
 		D3908FCAEDB4ED9DE2B4BCF4 /* libPods-ClarifaiApiDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ClarifaiApiDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB714F7E1CFBE7A6007FD7E3 /* CAIFuture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CAIFuture.h; path = ../Clarifai/CAIFuture.h; sourceTree = "<group>"; };
 		FB714F7F1CFBE7A6007FD7E3 /* CAIFuture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CAIFuture.m; path = ../Clarifai/CAIFuture.m; sourceTree = "<group>"; };
-		FB714F861CFBF15C007FD7E3 /* geth.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = geth.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,7 +98,6 @@
 		408D39571BACA1FA00C5608B /* Clarifai */ = {
 			isa = PBXGroup;
 			children = (
-				FB714F861CFBF15C007FD7E3 /* geth.jpg */,
 				408D395C1BACA1FA00C5608B /* AppDelegate.h */,
 				408D395D1BACA1FA00C5608B /* AppDelegate.m */,
 				4071951F1BADD02B0076B650 /* RecognitionViewController.h */,
@@ -258,7 +254,6 @@
 				408D39641BACA1FA00C5608B /* Main.storyboard in Resources */,
 				408D39691BACA1FA00C5608B /* LaunchScreen.xib in Resources */,
 				408D39661BACA1FA00C5608B /* Images.xcassets in Resources */,
-				FB714F871CFBF15C007FD7E3 /* geth.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -266,7 +261,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FB714F891CFBF189007FD7E3 /* geth.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

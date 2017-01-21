@@ -57,8 +57,8 @@
 - (void)recognizeImage:(UIImage *)image {
 
     // Initialize the Clarifai app with your app's ID and Secret.
-    ClarifaiApp *app = [[ClarifaiApp alloc] initWithAppID:@"5x08m0DJ5i6dAZ5auJO6IgoD23VFeABENJ9DbGbh"
-                                                appSecret:@"9mEL63LnMXVkxIlWIj35AcLoTSYSIqDlQ8UgszW2"];
+    ClarifaiApp *app = [[ClarifaiApp alloc] initWithAppID:@"gvUm6Nw22r5DuLFh8dXuH2DqFW8LqYBBcdpL4NME"
+                                                appSecret:@"wpCS7UCeZmY7Nx74Yku4_5C61X_MJGnOZczy_gj8"];
   
     // Fetch Clarifai's general model.
     [app getModelByName:@"general-v1.3" completion:^(ClarifaiModel *model, NSError *error) {
