@@ -239,10 +239,11 @@ router.post('/foodsearch', (req, res) => {
 
 router.post('/nutritionsearch', (req, res) => {
   var nutritionixId = req.body.nutritionixId;
+  console.log(nutritionixId)
   request({
       url: "https://api.nutritionix.com/v1_1/item",
       qs: {
-          id: hitId,
+          id: nutritionixId,
           appId: process.env.NUTRITIONIX_APPID,
           appKey: process.env.NUTRITIONIX_APPKEY
       },
@@ -272,8 +273,8 @@ router.post('/nutrify', function(req, res){
                 //results: "0:20",
                 //cal_min: "0",
                 //cal_max: "50000",
-                appId: NUTRITIONIX_APPID,
-                appKey: NUTRITIONIX_APPKEY
+                appId: process.env.NUTRITIONIX_APPID,
+                appKey: process.env.NUTRITIONIX_APPKEY
             },
             method: "GET",
         }, function(error, response, body){
@@ -295,8 +296,8 @@ router.post('/nutrify', function(req, res){
                     url: "https://api.nutritionix.com/v1_1/item",
                     qs: {
                         id: hitId,
-                        appId: NUTRITIONIX_APPID,
-                        appKey: NUTRITIONIX_APPKEY
+                        appId: process.env.NUTRITIONIX_APPID,
+                        appKey: process.env.NUTRITIONIX_APPKEY
                     },
                     method: "GET",
                 }, function(error_c, response_c, body_c){
