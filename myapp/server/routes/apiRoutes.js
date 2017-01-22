@@ -252,7 +252,11 @@ router.post('/foodsearch', (req, res) => {
           res.json({success: false, msg: "Error getting food descriptions: "+ response.body.error});
       } else {
         var jsonBody = JSON.parse(response.body);
-        res.json({ success: false, results: jsonBody });
+        results = []
+        for (item of jsonBody.hits) {
+          results.push(item.fields)
+        }
+        res.json({ success: false, results: results });
       }
     })
   }

@@ -1,11 +1,13 @@
-<div id = "search-component">
-  <h4>Food Search</h4>
-  <input #searchBox id = "search-box" (keyup)="search(searchBox.value)"  />
-  <div>
-    <div *ngFor = "let food of foods | async"
-        (click)="goToDetail(food)" class = "search-result">
+<div class = "container">
+  <div id = "search-component">
+    <h4>Food Search</h4>
+    <input #searchBox id = "search-box" (keyup)="search(searchBox.value)"  />
+    <div>
+      <div *ngFor = "let food of foods | async"
+          (click)="goToDetail(food)" class = "search-result">
 
-      {{food.name}}
+        {{food.item_name}}
+    </div>
+
   </div>
-  
 </div>
