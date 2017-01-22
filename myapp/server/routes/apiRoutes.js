@@ -20,6 +20,8 @@ const nutritionMap = {
   "calories": "nf_calories",
 };
 
+require('../config/passport')(passport);
+
 router.get('/check', (req, res) => {
   res.json({ boi: 'boi' });
 })
@@ -43,11 +45,11 @@ router.post('/signup', function(req, res){
         }, (err, user) => {
           if (err) throw err;
           if (!user) {
-            res.send({success: false, msg: 'Authentication faield. User not found'});
+            res.send({success: false, msg: 'Authentication failed. User not found'});
           } else {
             var token = jwt.encode(user, config.secret);
             console.log(token);
-            res.json({success: true, token: token});
+            res.json({success: true, token: 'JWT ' + token});
           }
         });
     });
@@ -67,7 +69,7 @@ router.post('/authenticate', function(req, res){
               if(isMatch && !err){
                   var token = jwt.encode(user, config.secret);
                   console.log(token);
-                  res.json({success: true, token: token});
+                  res.json({success: true, token: 'JWT '+ token});
               }else{
                   res.send({success: false, msg: 'Authentication failed. Wrong password.'});
               }
@@ -92,123 +94,137 @@ function getThresholds(diseaseName, cb){
   });
 }
 
-router.post('/analyze', function(req, res){
-  if(!req.body || !req.body.food || !req.body.name){
-    res.json({success: false, msg: "Must include food name and user name info."});
+router.post('/analyze', passport.authenticate('jwt', { session: false}), function(req, res){
+
+  if(!req.body || !req.body.food){
+    res.json({success: false, msg: "Must include food name."});
   }else{
-    User.findOne({
-      name: req.body.name
-    }, function(err, user){
-      if(err){
-        console.log("Error finding user: " + err);
-      }else{
-        if(user.diseases.length == 0){
-          res.json({success: true, data: {analyses: [] }});
-        }else{
+    var token = getToken(req.headers);
+    console.log("here")
+    if (token) {
+      var decoded = jwt.decode(token, config.secret);
+      User.findOne({
+        name: decoded.name
+      }, function(err, user) {
+          if (err) throw err;
 
-          var asyncTasks = [];
-          nutritionInfo = [];
-
-          // load thresholds for the disease
-          user.diseases.forEach(function(disease){
-            asyncTasks.push(function(cb){
-              getThresholds(disease, function(){
-                cb();
-              });
-            });
-          });
-
-          async.parallel(asyncTasks, function(){
-
-            // get nutrition data now
-            console.log(nutritionInfo);
-            request({
-                url: "https://api.nutritionix.com/v1_1/search/" + req.body.food,
-                qs: {
-                    //results: "0:20",
-                    //cal_min: "0",
-                    //cal_max: "50000",
-                    appId: NUTRITIONIX_APPID,
-                    appKey: NUTRITIONIX_APPKEY
-                },
-                method: "GET",
-            }, function(error, response, body){
-                var jsonBody = JSON.parse(response.body);
-                if (error) {
-                    console.log('Error getting food descriptions: ', error);
-                    res.json({success: false, msg: "Error getting food descriptions: "+ error});
-                } else if (response.body.error) {
-                    console.log('Error: ', response.body.error);
-                    res.json({success: false, msg: "Error getting food descriptions: "+ response.body.error});
-                } else if(jsonBody.hits.length == 0) {
-                    res.json({success: false, msg: "Error getting food descriptions: No hits found."});
+          if (!user) {
+            return res.status(403).send({success: false, msg: 'Authentication failed. User not found.'});
+          } else {
+            var username = user.name;
+            //res.json({success: true, msg: 'Welcome to your profile, ' + user.name + '!'});
+            
+                if(user.diseases.length == 0){
+                  res.json({success: true, data: {analyses: [] }});
                 }else{
-                    var firstHit = jsonBody.hits[0];
-                    //console.log(jsonBody);
-                    var hitId = firstHit._id;
 
+                  var asyncTasks = [];
+                  nutritionInfo = [];
+
+                  // load thresholds for the disease
+                  user.diseases.forEach(function(disease){
+                    asyncTasks.push(function(cb){
+                      getThresholds(disease, function(){
+                        cb();
+                      });
+                    });
+                  });
+
+                  async.parallel(asyncTasks, function(){
+
+                    // get nutrition data now
+                    console.log(nutritionInfo);
                     request({
-                        url: "https://api.nutritionix.com/v1_1/item",
+                        url: "https://api.nutritionix.com/v1_1/search/" + req.body.food,
                         qs: {
-                            id: hitId,
+                            //results: "0:20",
+                            //cal_min: "0",
+                            //cal_max: "50000",
                             appId: NUTRITIONIX_APPID,
                             appKey: NUTRITIONIX_APPKEY
                         },
                         method: "GET",
-                    }, function(error_c, response_c, body_c){
-                        response_c.body = JSON.parse(response_c.body);
-                        if (error_c) {
-                            console.log('Error getting food descriptions: ', error_c);
-                            res.json({success: false, msg: "Error getting nutrition values: "+ error_c});
-                        } else if (response_c.body.error) {
-                            console.log('Error: ', response_c.body.error);
-                            res.json({success: false, msg: "Error getting nutrition values: "+ response_c.body.error});
+                    }, function(error, response, body){
+                        var jsonBody = JSON.parse(response.body);
+                        if (error) {
+                            console.log('Error getting food descriptions: ', error);
+                            res.json({success: false, msg: "Error getting food descriptions: "+ error});
+                        } else if (response.body.error) {
+                            console.log('Error: ', response.body.error);
+                            res.json({success: false, msg: "Error getting food descriptions: "+ response.body.error});
+                        } else if(jsonBody.hits.length == 0) {
+                            res.json({success: false, msg: "Error getting food descriptions: No hits found."});
                         }else{
-                            //res.json({success: true, data: response_c.body});
-                            var foodInfo = response_c.body;
-                            console.log(foodInfo);
-                            var conflicts = {};
-                            nutritionInfo.forEach(function(disease){
-                              disease.nutrients_to_avoid.forEach(function(nutrient){
-                                var mappedNutrientName = nutritionMap[nutrient.name];
-                                var lvl = 100000;
-                                if (mappedNutrientName in foodInfo){
-                                  lvl = foodInfo[mappedNutrientName];
-                                }
-                                if (lvl == null){
-                                  lvl = 100000;
-                                }
+                            var firstHit = jsonBody.hits[0];
+                            //console.log(jsonBody);
+                            var hitId = firstHit._id;
 
-                                if(lvl >= nutrient.threshold){
-                                  if (!(nutrient.name in conflicts)){
-                                    var nutriDiseases = [];
-                                    conflicts[nutrient.name] = nutriDiseases;
+                            request({
+                                url: "https://api.nutritionix.com/v1_1/item",
+                                qs: {
+                                    id: hitId,
+                                    appId: NUTRITIONIX_APPID,
+                                    appKey: NUTRITIONIX_APPKEY
+                                },
+                                method: "GET",
+                            }, function(error_c, response_c, body_c){
+                                response_c.body = JSON.parse(response_c.body);
+                                if (error_c) {
+                                    console.log('Error getting food descriptions: ', error_c);
+                                    res.json({success: false, msg: "Error getting nutrition values: "+ error_c});
+                                } else if (response_c.body.error) {
+                                    console.log('Error: ', response_c.body.error);
+                                    res.json({success: false, msg: "Error getting nutrition values: "+ response_c.body.error});
+                                }else{
+                                    //res.json({success: true, data: response_c.body});
+                                    var foodInfo = response_c.body;
+                                    console.log(foodInfo);
+                                    var conflicts = {};
+                                    nutritionInfo.forEach(function(disease){
+                                      disease.nutrients_to_avoid.forEach(function(nutrient){
+                                        var mappedNutrientName = nutritionMap[nutrient.name];
+                                        var lvl = 100000;
+                                        if (mappedNutrientName in foodInfo){
+                                          lvl = foodInfo[mappedNutrientName];
+                                        }
+                                        if (lvl == null){
+                                          lvl = 100000;
+                                        }
 
-                                  }
-                                  conflicts[nutrient.name].push({
-                                    name: disease.name,
-                                    threshold: nutrient.threshold,
-                                    realval: lvl,
-                                    percentage: (lvl / nutrient.threshold) * 100,
-                                  });
+                                        if(lvl >= nutrient.threshold){
+                                          if (!(nutrient.name in conflicts)){
+                                            var nutriDiseases = [];
+                                            conflicts[nutrient.name] = nutriDiseases;
+
+                                          }
+                                          conflicts[nutrient.name].push({
+                                            name: disease.name,
+                                            threshold: nutrient.threshold,
+                                            realval: lvl,
+                                            percentage: (lvl / nutrient.threshold) * 100,
+                                          });
+
+                                        }
+                                      });
+                                    });
+                                    res.json({success: true, data: {analyses: conflicts}});
 
                                 }
-                              });
                             });
-                            res.json({success: true, data: {analyses: conflicts}});
-
                         }
                     });
+
+
+                  });
+
+
                 }
-            });
-
-
-          });
-
-
-        }
-      }
-    })
+              
+          }
+      });
+    } else {
+      return res.status(403).send({success: false, msg: 'No token provided.'});
+    }
   }
 })
 
@@ -391,13 +407,13 @@ router.post('/updateData', passport.authenticate('jwt', { session: false}), func
 getToken = function (headers) {
   if (headers && headers.authorization) {
     var parted = headers.authorization.split(' ');
-    //console.log("here")
-    //if (parted.length === 2) {
-    //  return parted[1];
-    //} else {
-    //  return null;
-    //}
-    return headers.authorization
+    console.log("here")
+    if (parted.length === 2) {
+      return parted[1];
+    } else {
+      return null;
+    }
+    //return headers.authorization
   } else {
     return null;
   }
