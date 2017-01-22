@@ -14,7 +14,7 @@ import { User } from './user'
 
 export class ProfileComponent implements OnInit {
   diseasename: any
-  constructor(private http: Http) { 
+  constructor(private http: Http) {
     this.diseasename = {};
     this.diseasename["high_blood_pressure"] = "high blood pressure";
     this.diseasename["diabetes"] = "diabetes";
@@ -27,8 +27,9 @@ export class ProfileComponent implements OnInit {
     this.http.get(url, { headers: contentHeaders })
     .toPromise()
     .then(response => {
-      console.log(response.json())
-      this.user = response.json().data as User
+      this.user = response.json().profile
+      console.log(this.user.diseases);
+
     })
     .catch(error => {
       console.log(error);

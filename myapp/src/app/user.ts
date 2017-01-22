@@ -1,4 +1,4 @@
 export class User {
-  username: string;
-  diseases: Array<string>;
+  name: string;
+  diseases: any;
 };
