@@ -24,7 +24,9 @@
     "@angular/platform-browser": "^2.3.1",
     "@angular/platform-browser-dynamic": "^2.3.1",
     "@angular/router": "^3.3.1",
+    "angular-cli": "1.0.0-beta.26",
     "angular2-jwt": "^0.1.28",
+    "async": "^2.1.4",
     "bcrypt": "^1.0.2",
     "body-parser": "^1.16.0",
     "connect-flash": "^0.1.1",
@@ -43,9 +45,8 @@
     "rxjs": "^5.0.1",
     "serve-favicon": "^2.3.2",
     "ts-helpers": "^1.1.1",
-    "zone.js": "^0.7.2",
     "typescript": "~2.0.3",
-    "angular-cli": "1.0.0-beta.26"
+    "zone.js": "^0.7.2"
   },
   "devDependencies": {
     "@angular/compiler-cli": "^2.3.1",

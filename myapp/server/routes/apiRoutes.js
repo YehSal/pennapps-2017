@@ -7,6 +7,9 @@ var Disease = require('../app/models/disease');
 var jwt = require('jwt-simple');
 var config = require('../config/database');
 var request = require('request');
+var async = require('async');
+const NUTRITIONIX_APPID = process.env.NUTRITIONIX_APPID;
+const NUTRITIONIX_APPKEY = process.env.NUTRITIONIX_APPKEY;
 const nutritionMap = {
   "fat": "nf_total_fat",
   "sodium": "nf_sodium",
@@ -82,6 +85,7 @@ function getThresholds(diseaseName, cb){
     if(err){
       console.log("Disease not found.");
     }else{
+      console.log(disease);
       nutritionInfo.push(disease);
       cb();
     }
@@ -92,7 +96,6 @@ router.post('/analyze', function(req, res){
   if(!req.body || !req.body.food || !req.body.name){
     res.json({success: false, msg: "Must include food name and user name info."});
   }else{
-    console.log(req.body.userid);
     User.findOne({
       name: req.body.name
     }, function(err, user){
@@ -118,6 +121,7 @@ router.post('/analyze', function(req, res){
           async.parallel(asyncTasks, function(){
 
             // get nutrition data now
+            console.log(nutritionInfo);
             request({
                 url: "https://api.nutritionix.com/v1_1/search/" + req.body.food,
                 qs: {
@@ -162,13 +166,14 @@ router.post('/analyze', function(req, res){
                         }else{
                             //res.json({success: true, data: response_c.body});
                             var foodInfo = response_c.body;
+                            console.log(foodInfo);
                             var conflicts = {};
                             nutritionInfo.forEach(function(disease){
                               disease.nutrients_to_avoid.forEach(function(nutrient){
                                 var mappedNutrientName = nutritionMap[nutrient.name];
                                 var lvl = 100000;
-                                if (mappedNutrientName in foodInfo.data){
-                                  lvl = foodInfo.data[mappedNutrientName];
+                                if (mappedNutrientName in foodInfo){
+                                  lvl = foodInfo[mappedNutrientName];
                                 }
                                 if (lvl == null){
                                   lvl = 100000;
@@ -184,13 +189,13 @@ router.post('/analyze', function(req, res){
                                     name: disease.name,
                                     threshold: nutrient.threshold,
                                     realval: lvl,
-                                    percentage: (lvl / threshold) * 100,
+                                    percentage: (lvl / nutrient.threshold) * 100,
                                   });
 
                                 }
                               });
                             });
-                            res.json({success: true, analyses: conflicts});
+                            res.json({success: true, data: {analyses: conflicts}});
 
                         }
                     });
