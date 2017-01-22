@@ -467,7 +467,7 @@ router.get('/profile', passport.authenticate('jwt', { session: false}), function
         if (!user) {
           return res.status(403).send({success: false, msg: 'Authentication failed. User not found.'});
         } else {
-          res.json({success: true, msg: 'Welcome to your profile, ' + user.name + '!'});
+          res.json({success: true, profile: {name: user.name, diseases: user.diseases}});
         }
     });
   } else {
