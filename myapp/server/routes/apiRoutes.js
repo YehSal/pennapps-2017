@@ -96,6 +96,117 @@ function getThresholds(diseaseName, cb){
 
 router.post('/analyze', passport.authenticate('jwt', { session: false}), function(req, res){
 
+  if(!req.body || !req.body.foodid){
+    res.json({success: false, msg: "Must include food id."});
+  }else{
+    var token = getToken(req.headers);
+    console.log("here")
+    if (token) {
+      var decoded = jwt.decode(token, config.secret);
+      User.findOne({
+        name: decoded.name
+      }, function(err, user) {
+          if (err) throw err;
+
+          if (!user) {
+            return res.status(403).send({success: false, msg: 'Authentication failed. User not found.'});
+          } else {
+            var username = user.name;
+            //res.json({success: true, msg: 'Welcome to your profile, ' + user.name + '!'});
+            
+                if(user.diseases.length == 0){
+                  res.json({success: true, data: {analyses: [] }});
+                }else{
+
+                  var asyncTasks = [];
+                  nutritionInfo = [];
+
+                  // load thresholds for the disease
+                  user.diseases.forEach(function(disease){
+                    asyncTasks.push(function(cb){
+                      getThresholds(disease, function(){
+                        cb();
+                      });
+                    });
+                  });
+
+                  async.parallel(asyncTasks, function(){
+
+                    // get nutrition data now
+                    console.log(nutritionInfo);
+                    var hitId = req.body.foodid;
+                    request({
+                        url: "https://api.nutritionix.com/v1_1/item/",
+                        qs: {
+                            //results: "0:20",
+                            //cal_min: "0",
+                            //cal_max: "50000",
+                            id: hitId,
+                            appId: NUTRITIONIX_APPID,
+                            appKey: NUTRITIONIX_APPKEY
+                        },
+                        method: "GET",
+                    }, function(error_c, response_c, body_c){
+                        response_c.body = JSON.parse(response_c.body);
+                        if (error_c) {
+                            console.log('Error getting food descriptions: ', error_c);
+                            res.json({success: false, msg: "Error getting nutrition values: "+ error_c});
+                        } else if (response_c.body.error) {
+                            console.log('Error: ', response_c.body.error);
+                            res.json({success: false, msg: "Error getting nutrition values: "+ response_c.body.error});
+                        }else{
+                            //res.json({success: true, data: response_c.body});
+                            var foodInfo = response_c.body;
+                            console.log(foodInfo);
+                            var conflicts = {};
+                            nutritionInfo.forEach(function(disease){
+                              disease.nutrients_to_avoid.forEach(function(nutrient){
+                                var mappedNutrientName = nutritionMap[nutrient.name];
+                                var lvl = 100000;
+                                if (mappedNutrientName in foodInfo){
+                                  lvl = foodInfo[mappedNutrientName];
+                                }
+                                if (lvl == null){
+                                  lvl = 100000;
+                                }
+
+                                if(lvl >= nutrient.threshold){
+                                  if (!(nutrient.name in conflicts)){
+                                    var nutriDiseases = [];
+                                    conflicts[nutrient.name] = nutriDiseases;
+
+                                  }
+                                  conflicts[nutrient.name].push({
+                                    name: disease.name,
+                                    threshold: nutrient.threshold,
+                                    realval: lvl,
+                                    percentage: (lvl / nutrient.threshold) * 100,
+                                  });
+
+                                }
+                              });
+                            });
+                            res.json({success: true, data: {analyses: conflicts}});
+
+                        }
+                    });
+
+
+                  });
+
+
+                }
+              
+          }
+      });
+    } else {
+      return res.status(403).send({success: false, msg: 'No token provided.'});
+    }
+  }
+})
+
+router.post('/manalyze', passport.authenticate('jwt', { session: false}), function(req, res){
+
   if(!req.body || !req.body.food){
     res.json({success: false, msg: "Must include food name."});
   }else{
@@ -226,7 +337,7 @@ router.post('/analyze', passport.authenticate('jwt', { session: false}), functio
       return res.status(403).send({success: false, msg: 'No token provided.'});
     }
   }
-})
+});
 
 router.post('/foodsearch', (req, res) => {
   if (!req.body || !req.body.term) {
@@ -252,11 +363,7 @@ router.post('/foodsearch', (req, res) => {
           res.json({success: false, msg: "Error getting food descriptions: "+ response.body.error});
       } else {
         var jsonBody = JSON.parse(response.body);
-        results = []
-        for (item of jsonBody.hits) {
-          results.push(item.fields)
-        }
-        res.json({ success: false, results: results });
+        res.json({ success: false, results: jsonBody });
       }
     })
   }
