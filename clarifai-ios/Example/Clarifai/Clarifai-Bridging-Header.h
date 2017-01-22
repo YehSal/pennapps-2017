@@ -9,5 +9,4 @@
 #ifndef SwiftBridging_h
 #define SwiftBridging_h
 
-
 #endif /* SwiftBridging_h */

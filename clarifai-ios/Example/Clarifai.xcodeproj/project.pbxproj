@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		128147A778D8B3259B046C69 /* Pods_Clarifai.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C569392294295773E7FF66F7 /* Pods_Clarifai.framework */; };
+		171F9CC11E340F7800230D7C /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171F9CC01E340F7800230D7C /* LoginViewController.swift */; };
+		171F9CC41E3447E800230D7C /* JSONJoy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 171F9CC31E3447E800230D7C /* JSONJoy.framework */; };
+		171F9CC61E3447EE00230D7C /* SwiftHTTP.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 171F9CC51E3447EE00230D7C /* SwiftHTTP.framework */; };
+		171F9CC81E344DBA00230D7C /* QuerySubmit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171F9CC71E344DBA00230D7C /* QuerySubmit.swift */; };
 		2ECE15ED1620BFF3032BC8D3 /* Pods_ClarifaiTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9C7FF2E7E021481371589B5 /* Pods_ClarifaiTests.framework */; };
 		407195211BADD02B0076B650 /* RecognitionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 407195201BADD02B0076B650 /* RecognitionViewController.m */; };
 		408D395B1BACA1FA00C5608B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 408D395A1BACA1FA00C5608B /* main.m */; };
@@ -30,6 +34,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		171F9CC01E340F7800230D7C /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		171F9CC21E34100600230D7C /* Clarifai-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Clarifai-Bridging-Header.h"; sourceTree = "<group>"; };
+		171F9CC31E3447E800230D7C /* JSONJoy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JSONJoy.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Clarifai-asmfpetymujcekeljjlozotlbbrz/Build/Products/Debug-iphoneos/JSONJoy-Swift/JSONJoy.framework"; sourceTree = "<group>"; };
+		171F9CC51E3447EE00230D7C /* SwiftHTTP.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftHTTP.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Clarifai-asmfpetymujcekeljjlozotlbbrz/Build/Products/Debug-iphoneos/SwiftHTTP/SwiftHTTP.framework"; sourceTree = "<group>"; };
+		171F9CC71E344DBA00230D7C /* QuerySubmit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuerySubmit.swift; sourceTree = "<group>"; };
 		3E29E2F7329FB2713B8EB691 /* libPods-ClarifaiApiDemoTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ClarifaiApiDemoTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4071951F1BADD02B0076B650 /* RecognitionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecognitionViewController.h; sourceTree = "<group>"; };
 		407195201BADD02B0076B650 /* RecognitionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecognitionViewController.m; sourceTree = "<group>"; };
@@ -60,6 +69,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				171F9CC61E3447EE00230D7C /* SwiftHTTP.framework in Frameworks */,
+				171F9CC41E3447E800230D7C /* JSONJoy.framework in Frameworks */,
 				128147A778D8B3259B046C69 /* Pods_Clarifai.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -98,14 +109,17 @@
 		408D39571BACA1FA00C5608B /* Clarifai */ = {
 			isa = PBXGroup;
 			children = (
+				171F9CC01E340F7800230D7C /* LoginViewController.swift */,
+				407195201BADD02B0076B650 /* RecognitionViewController.m */,
+				171F9CC71E344DBA00230D7C /* QuerySubmit.swift */,
 				408D395C1BACA1FA00C5608B /* AppDelegate.h */,
 				408D395D1BACA1FA00C5608B /* AppDelegate.m */,
 				4071951F1BADD02B0076B650 /* RecognitionViewController.h */,
-				407195201BADD02B0076B650 /* RecognitionViewController.m */,
 				408D39621BACA1FA00C5608B /* Main.storyboard */,
 				408D39651BACA1FA00C5608B /* Images.xcassets */,
 				408D39671BACA1FA00C5608B /* LaunchScreen.xib */,
 				408D39581BACA1FA00C5608B /* Supporting Files */,
+				171F9CC21E34100600230D7C /* Clarifai-Bridging-Header.h */,
 			);
 			path = Clarifai;
 			sourceTree = "<group>";
@@ -152,6 +166,8 @@
 		B3D5CE5DCC12FDEE33B911C2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				171F9CC51E3447EE00230D7C /* SwiftHTTP.framework */,
+				171F9CC31E3447E800230D7C /* JSONJoy.framework */,
 				D3908FCAEDB4ED9DE2B4BCF4 /* libPods-ClarifaiApiDemo.a */,
 				3E29E2F7329FB2713B8EB691 /* libPods-ClarifaiApiDemoTests.a */,
 				C569392294295773E7FF66F7 /* Pods_Clarifai.framework */,
@@ -210,19 +226,23 @@
 		408D394D1BACA1FA00C5608B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				KnownAssetTags = (
+					faew,
+				);
 				LastSwiftMigration = 0700;
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = "Clarifai, Inc.";
 				TargetAttributes = {
 					408D39541BACA1FA00C5608B = {
 						CreatedOnToolsVersion = 6.4;
 						DevelopmentTeam = 6TZ8QC2299;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0820;
 					};
 					408D396D1BACA1FA00C5608B = {
 						CreatedOnToolsVersion = 6.4;
 						DevelopmentTeam = 32E6VH74P3;
+						LastSwiftMigration = 0820;
 						TestTargetID = 408D39541BACA1FA00C5608B;
 					};
 				};
@@ -367,6 +387,8 @@
 				FB714F801CFBE7A6007FD7E3 /* CAIFuture.m in Sources */,
 				408D395E1BACA1FA00C5608B /* AppDelegate.m in Sources */,
 				408D395B1BACA1FA00C5608B /* main.m in Sources */,
+				171F9CC11E340F7800230D7C /* LoginViewController.swift in Sources */,
+				171F9CC81E344DBA00230D7C /* QuerySubmit.swift in Sources */,
 				407195211BADD02B0076B650 /* RecognitionViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -412,6 +434,7 @@
 		408D39761BACA1FA00C5608B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -422,13 +445,17 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -446,16 +473,21 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_MODULE_NAME = Clarifai;
+				PRODUCT_NAME = Clarifai;
 				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/Clarifai/Clarifai-Bridging-Header";
 			};
 			name = Debug;
 		};
 		408D39771BACA1FA00C5608B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -466,13 +498,17 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -483,9 +519,14 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_MODULE_NAME = Clarifai;
+				PRODUCT_NAME = Clarifai;
 				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/Clarifai/Clarifai-Bridging-Header";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -502,7 +543,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.SenHuang.Thing;
 				PRODUCT_NAME = Clarifai;
-				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Clarifai/Clarifai-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
@@ -520,7 +561,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.SenHuang.Thing;
 				PRODUCT_NAME = Clarifai;
-				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Clarifai/Clarifai-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
@@ -529,7 +570,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 73491E5B15BE035CEE1E28D6 /* Pods-ClarifaiTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = 32E6VH74P3;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -540,6 +583,9 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.clarifai.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Clarifai;
+				SWIFT_OBJC_BRIDGING_HEADER = "Clarifai/ClarifaiTests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Clarifai.app/Clarifai";
 			};
 			name = Debug;
@@ -548,13 +594,17 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AF2D2C71F3981D15F040DA18 /* Pods-ClarifaiTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = 32E6VH74P3;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = ClarifaiTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.clarifai.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Clarifai;
+				SWIFT_OBJC_BRIDGING_HEADER = "Clarifai/ClarifaiTests-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Clarifai.app/Clarifai";
 			};
 			name = Release;

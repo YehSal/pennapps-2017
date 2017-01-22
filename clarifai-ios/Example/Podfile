@@ -7,6 +7,8 @@ use_frameworks!
 target 'Clarifai' do
 pod 'AFNetworking', '~> 2.0'
 pod 'AFNetworkActivityLogger'
+pod 'SwiftHTTP', '~> 2.0.0'
+pod 'JSONJoy-Swift', '~> 3.0.0'
 pod 'Clarifai', :path => '../'
 end
 

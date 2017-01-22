@@ -6,6 +6,8 @@
 #import "RecognitionViewController.h"
 #import "ClarifaiApp.h"
 #import "Clarifai-Swift.h"
+NSString* sentTag;
+
 
 /**
  * This view controller performs recognition using the Clarifai API.
@@ -17,12 +19,13 @@
 @property (weak, nonatomic) IBOutlet UIButton *button;
 @property (strong, nonatomic) ClarifaiApp *app;
 @property (weak, nonatomic) LoginViewController *LoginViewController;
+@property (weak, nonatomic) QuerySubmit *QuerySubmit;
 @end
-
 
 @implementation RecognitionViewController
 NSArray *_pickerViewData;
-NSString * sentTag;
+
+NSString * sentUser;
 
 - (void)viewDidLoad
 {
@@ -58,8 +61,6 @@ NSString * sentTag;
 // Catpure the picker view selection
 - (void)pickerViewSelection:(UIPickerView *)pickerViewSelection didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
-    // This method is triggered whenever the user makes a change to the picker selection.
-    // The parameter named row and component represents what was selected.
 }
 
 - (IBAction)cameraAction:(UIButton *)sender {
@@ -71,12 +72,11 @@ NSString * sentTag;
 }   // Camera shit
 
 - (IBAction)sendTag:(UIButton *)sender {
-    NSInteger row;
-    //NSArray *repeatPickerData;
-    UIPickerView *repeatPickerView;
-    
-    row = [repeatPickerView selectedRowInComponent:0];
-    // self.strPrintRepeat = [repeatPickerData objectAtIndex:row];
+    NSUInteger row;
+    row = [_pickerView selectedRowInComponent:0];
+    printf("%ld", (long)row);
+    sentTag = [_pickerViewData objectAtIndex:row];
+    NSLog(@"%@", sentTag);
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
@@ -124,6 +124,19 @@ NSString * sentTag;
             }
         }];
     }];
+}
+
+- (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender {
+    if (sentTag == NULL) return NO;
+    else return YES;
+}
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+    if([[segue identifier] isEqualToString:@"finalSubmit"]){
+        QuerySubmit *controller = (QuerySubmit *)segue.destinationViewController;
+        controller.finalTag = sentTag;
+        NSLog(@"%@", controller.finalTag);
+    }
 }
 
 @end

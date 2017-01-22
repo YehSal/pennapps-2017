@@ -1,5 +1,18 @@
 import Foundation
 import UIKit
+import SwiftHTTP
+import JSONJoy
+
+public var TOKEN = String()
+
+@objc public class AppConstant:NSObject{
+    private override init() {}
+    class func toke() -> String { return TOKEN }
+}
+
+public class TagConstant {
+    public var tag = String()
+}
 
 @objc class LoginViewController: UIViewController
 {
@@ -7,39 +20,53 @@ import UIKit
     @IBOutlet weak var passTextField: UITextField!
     
     @IBAction func loginButtonAction(_ sender: UIButton) {
+        let username = userTextField.text
+        let password = passTextField.text
+        let params = ["name": username!, "password": password!]
+        print(username!)
+        print(password!)
         
-        let username = userTextField
-        let password = passTextField
-        let loginString = String(format: "%@:%@", username!, password!)
-        let loginData = loginString.data(using: String.Encoding.utf8)!
-        let base64LoginString = loginData.base64EncodedString()
+        struct Response: JSONJoy {
+            let token: String
+            init(_ decoder: JSONDecoder) throws {
+                token = try decoder["token"].get()
+            }
+        }
         
-        // create the request
-        let url = URL(string: "https://blooming-headland-37255.herokuapp.com/api/signup")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("Basic \(base64LoginString)", forHTTPHeaderField: "Authorization")
+        // POST the username and password
         
-        // fire off the request
-        // make sure your class conforms to NSURLConnectionDelegate
-        _ = NSURLConnection(request: request, delegate: self)
+        do {
+            let opt = try HTTP.POST("https://afternoon-meadow-50393.herokuapp.com/api/authenticate", parameters: params)
+            opt.start { response in
+                do {
+                    let resp = try Response(JSONDecoder(response.data))
+                    print(resp.token)
+                    TOKEN = resp.token
+                    print(TOKEN)
+                } catch {
+                    print("unable to parse the JSON")
+                }
+                self.dismiss(animated: true, completion: nil)
+            }
+        } catch let error {
+            print("got an error creating the request: \(error)")
+        }
+        /*
+        do {
+            let opt = try HTTP.GET("https://google.com")
+            opt.start { response in
+                if let err = response.error {
+                    print("error: \(err.localizedDescription)")
+                    return //also notify app of failure as needed
+                }
+                print("opt finished: \(response.description)")
+                //print("data is: \(response.data)") access the response of the data with response.data
+            }
+        } catch let error {
+            print("got an error creating the request: \(error)")
+        }
+         */
+        
     }
     
-    var data: NSMutableData = NSMutableData()
-    
-    func connection(connection: NSURLConnection!, didFailWithError error: NSError!) {
-        print("Failed with error:\(error.localizedDescription)")
-    }
-    
-    //NSURLConnection delegate method
-    func connection(didReceiveResponse: NSURLConnection!, didReceiveResponse response: URLResponse!) {
-        //New request so we need to clear the data object
-        self.data = NSMutableData()
-    }
-    
-    //NSURLConnection delegate method
-    func connection(connection: NSURLConnection!, didReceiveData data: NSData!) {
-        //Append incoming data
-        self.data.append(data as Data)
-    }
 }
