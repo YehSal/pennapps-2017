@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs/observable';
-import { Subject } from 'rxjs/subject';
+import { Observable } from 'rxjs';
+import { Subject } from 'rxjs';
 
 import { FoodSearchService } from './food-search-service';
 import { Food } from './food';
@@ -9,6 +9,7 @@ import { Food } from './food';
 @Component({
   selector: 'food-search',
   templateUrl: './food-search.component.html',
+  styleUrls: ['./food-search.component.css'],
   providers: [FoodSearchService]
 })
 export class FoodSearchComponent implements OnInit {
@@ -34,7 +35,7 @@ export class FoodSearchComponent implements OnInit {
   }
 
   goToDetail(food: Food): void {
-    let link = ['/detail', food.nutrionixId];
+    let link = ['/detail', food.item_id];
     this.router.navigate(link);
   }
 }

@@ -1,4 +1,5 @@
 export class Food {
-  name: string;
-  nutrionixId: number;
+  brand_name: string
+  item_id: string
+  item_name: string
 }

@@ -4,6 +4,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { Home } from './home.component';
 import { Login } from './login.component';
 import { Signup } from './signup.component';
+import { FoodSearchComponent } from './food-search.component'
+import { FoodAnalysisComponent } from './food-analysis.component'
 import { AuthGuard } from './common/auth.guard';
 
 const routes: Routes = [
@@ -24,6 +26,14 @@ const routes: Routes = [
     path: 'home',
     component: Home,
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'search',
+    component: FoodSearchComponent
+  },
+  {
+    path: 'analyze/:id',
+    component: FoodAnalysisComponent
   }
 ]
 
