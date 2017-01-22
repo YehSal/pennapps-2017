@@ -1,8 +1,10 @@
 
 #import "AppDelegate.h"
 #import "AFNetworkActivityLogger.h"
+#import "Clarifai-Swift.h"
 
 @interface AppDelegate ()
+
 @end
 
 @implementation AppDelegate

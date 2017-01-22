@@ -5,6 +5,7 @@
 
 #import "RecognitionViewController.h"
 #import "ClarifaiApp.h"
+#import "Clarifai-Swift.h"
 
 /**
  * This view controller performs recognition using the Clarifai API.
@@ -15,6 +16,7 @@
 @property (weak, nonatomic) IBOutlet UIPickerView *pickerView;
 @property (weak, nonatomic) IBOutlet UIButton *button;
 @property (strong, nonatomic) ClarifaiApp *app;
+@property (weak, nonatomic) LoginViewController *LoginViewController;
 @end
 
 
@@ -26,9 +28,11 @@ NSString * sentTag;
 {
     [super viewDidLoad];
     _pickerViewData = @[@"Item 1", @"Item 2", @"Item 3", @"Item 4", @"Item 5", @"Item 6", @"Item 7", @"Item 8", @"Item 9", @"Item 10"];
-    
     self.pickerView.dataSource = self;
     self.pickerView.delegate = self;
+    
+    [self performSegueWithIdentifier:@"loginView" sender:self];
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -68,7 +72,7 @@ NSString * sentTag;
 
 - (IBAction)sendTag:(UIButton *)sender {
     NSInteger row;
-    NSArray *repeatPickerData;
+    //NSArray *repeatPickerData;
     UIPickerView *repeatPickerView;
     
     row = [repeatPickerView selectedRowInComponent:0];

@@ -1,0 +1,6 @@
+{
+	"undefined": "/data/db",
+	"dev": "/data/db",
+	"prod": "/data/db",
+	"test": "/data/db"
+}
