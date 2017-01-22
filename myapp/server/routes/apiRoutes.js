@@ -7,8 +7,8 @@ var Disease = require('../app/models/disease');
 var jwt = require('jwt-simple');
 var config = require('../config/database');
 const nutritionMap = {
-  "fat": "nf_total_fat", 
-  "sodium": "nf_sodium", 
+  "fat": "nf_total_fat",
+  "sodium": "nf_sodium",
   "cholesterol": "nf_cholesterol",
   "carbohydrate": "nf_total_carbohydrate",
   "sugars": "nf_sugars",
@@ -185,12 +185,12 @@ router.post('/analyze', function(req, res){
                                     realval: lvl,
                                     percentage: (lvl / threshold) * 100,
                                   });
-                                   
+
                                 }
                               });
                             });
                             res.json({success: true, analyses: conflicts});
-                            
+
                         }
                     });
                 }
@@ -204,6 +204,60 @@ router.post('/analyze', function(req, res){
       }
     })
   }
+})
+
+router.post('/foodsearch', (req, res) => {
+  if (!req.body || !req.body.term) {
+    res.json({ success: false, msg: "must include food to lookup"});
+  } else {
+    console.log(req.body.term);
+    request({
+      url: "https://api.nutritionix.com/v1_1/search/" + req.body.term,
+      qs: {
+          //results: "0:20",
+          //cal_min: "0",
+          //cal_max: "50000",
+          appId: process.env.NUTRITIONIX_APPID,
+          appKey: process.env.NUTRITIONIX_APPKEY
+      },
+      method: "GET"
+    }, (error, response, body) => {
+      if (error) {
+        console.log('Error getting food descriptions: ', error);
+        res.json({success: false, msg: "Error getting food descriptions: "+ error});
+      } else if (response.body.error) {
+          console.log('Error: ', response.body.error);
+          res.json({success: false, msg: "Error getting food descriptions: "+ response.body.error});
+      } else {
+        var jsonBody = JSON.parse(response.body);
+        res.json({ success: false, results: jsonBody });
+      }
+    })
+  }
+})
+
+router.post('/nutritionsearch', (req, res) => {
+  var nutritionixId = req.body.nutritionixId;
+  request({
+      url: "https://api.nutritionix.com/v1_1/item",
+      qs: {
+          id: hitId,
+          appId: process.env.NUTRITIONIX_APPID,
+          appKey: process.env.NUTRITIONIX_APPKEY
+      },
+      method: "GET",
+  }, function(error_c, response_c, body_c){
+      response_c.body = JSON.parse(response_c.body);
+      if (error_c) {
+          console.log('Error getting food descriptions: ', error_c);
+          res.json({success: false, msg: "Error getting nutrition values: "+ error_c});
+      } else if (response_c.body.error) {
+          console.log('Error: ', response_c.body.error);
+          res.json({success: false, msg: "Error getting nutrition values: "+ response_c.body.error});
+      }else{
+          res.json({success: true, results: response_c.body});
+      }
+  });
 })
 
 router.post('/nutrify', function(req, res){
