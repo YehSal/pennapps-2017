@@ -7,7 +7,8 @@ import { FoodSearchService } from './food-search-service';
 
 @Component({
   selector: 'food-analysis',
-  templateUrl: './food-analysis.component.html'
+  templateUrl: './food-analysis.component.html',
+  providers: [FoodSearchService]
 })
 export class FoodAnalysisComponent implements OnInit {
   analysis: Analysis

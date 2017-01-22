@@ -5,9 +5,9 @@
     <div>
       <div *ngFor = "let food of foods | async"
           (click)="goToDetail(food)" class = "search-result">
+        {{ food.item_name }}
+      </div>
 
-        {{food.item_name}}
     </div>
-
   </div>
 </div>

@@ -27,7 +27,10 @@ export class FoodSearchService {
     return this.http
               .post(url, body, { headers: contentHeaders })
               .toPromise()
-              .then(response => response.json().data as Analysis)
+              .then(response => {
+                console.log(response.json())
+                return response.json().data as Analysis
+              })
               .catch(this.handleError);
   }
 
