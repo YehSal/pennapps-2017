@@ -35,7 +35,7 @@ export class FoodSearchComponent implements OnInit {
   }
 
   goToDetail(food: Food): void {
-    let link = ['/detail', food.item_id];
+    let link = ['/analyze', food.item_id];
     this.router.navigate(link);
   }
 }

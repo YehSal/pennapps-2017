@@ -11,6 +11,7 @@ import { Login } from './login.component';
 import { Signup } from './signup.component';
 import { Home } from './home.component';
 import { FoodSearchComponent } from './food-search.component';
+import { FoodAnalysisComponent } from './food-analysis.component';
 import { AuthGuard } from './common/auth.guard';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -25,7 +26,8 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     Login,
     Signup,
     Home,
-    FoodSearchComponent
+    FoodSearchComponent,
+    FoodAnalysisComponent
   ],
   imports: [
     BrowserModule,
