@@ -3,8 +3,18 @@ var router = express.Router();
 var path = require('path');
 var passport = require('passport');
 var User = require('../app/models/user');
+var Disease = require('../app/models/disease');
 var jwt = require('jwt-simple');
 var config = require('../config/database');
+const nutritionMap = {
+  "fat": "nf_total_fat", 
+  "sodium": "nf_sodium", 
+  "cholesterol": "nf_cholesterol",
+  "carbohydrate": "nf_total_carbohydrate",
+  "sugars": "nf_sugars",
+  "protein": "nf_protein",
+  "calories": "nf_calories",
+};
 
 router.get('/check', (req, res) => {
   res.json({ boi: 'boi' });
@@ -61,6 +71,140 @@ router.post('/authenticate', function(req, res){
         }
     });
 });
+
+var nutritionInfo = [];
+
+function getThresholds(diseaseName, cb){
+  Disease.findOne({
+    name: diseaseName,
+  }, function(err, disease){
+    if(err){
+      console.log("Disease not found.");
+    }else{
+      nutritionInfo.push(disease);
+      cb();
+    }
+  });
+}
+
+router.post('/analyze', function(req, res){
+  if(!req.body || !req.body.food || !req.body.name){
+    res.json({success: false, msg: "Must include food name and user name info."});
+  }else{
+    console.log(req.body.userid);
+    User.findOne({
+      name: req.body.name;
+    }, function(err, user){
+      if(err){
+        console.log("Error finding user: " + err);
+      }else{
+        if(user.diseases.length == 0){
+          res.json({success: true, data: {analyses: [] }});
+        }else{
+
+          var asyncTasks = [];
+          nutritionInfo = [];
+
+          // load thresholds for the disease
+          user.diseases.forEach(function(disease){
+            asyncTasks.push(function(cb){
+              getThresholds(disease, function(){
+                cb();
+              });
+            });
+          });
+
+          async.parallel(asyncTasks, function(){
+
+            // get nutrition data now
+            request({
+                url: "https://api.nutritionix.com/v1_1/search/" + req.body.food,
+                qs: {
+                    //results: "0:20",
+                    //cal_min: "0",
+                    //cal_max: "50000",
+                    appId: NUTRITIONIX_APPID,
+                    appKey: NUTRITIONIX_APPKEY
+                },
+                method: "GET",
+            }, function(error, response, body){
+                var jsonBody = JSON.parse(response.body);
+                if (error) {
+                    console.log('Error getting food descriptions: ', error);
+                    res.json({success: false, msg: "Error getting food descriptions: "+ error});
+                } else if (response.body.error) {
+                    console.log('Error: ', response.body.error);
+                    res.json({success: false, msg: "Error getting food descriptions: "+ response.body.error});
+                } else if(jsonBody.hits.length == 0) {
+                    res.json({success: false, msg: "Error getting food descriptions: No hits found."});
+                }else{
+                    var firstHit = jsonBody.hits[0];
+                    //console.log(jsonBody);
+                    var hitId = firstHit._id;
+
+                    request({
+                        url: "https://api.nutritionix.com/v1_1/item",
+                        qs: {
+                            id: hitId,
+                            appId: NUTRITIONIX_APPID,
+                            appKey: NUTRITIONIX_APPKEY
+                        },
+                        method: "GET",
+                    }, function(error_c, response_c, body_c){
+                        response_c.body = JSON.parse(response_c.body);
+                        if (error_c) {
+                            console.log('Error getting food descriptions: ', error_c);
+                            res.json({success: false, msg: "Error getting nutrition values: "+ error_c});
+                        } else if (response_c.body.error) {
+                            console.log('Error: ', response_c.body.error);
+                            res.json({success: false, msg: "Error getting nutrition values: "+ response_c.body.error});
+                        }else{
+                            //res.json({success: true, data: response_c.body});
+                            var foodInfo = response_c.body;
+                            var conflicts = {};
+                            nutritionInfo.forEach(function(disease){
+                              disease.nutrients_to_avoid.forEach(function(nutrient){
+                                var mappedNutrientName = nutritionMap[nutrient.name];
+                                var lvl = 100000;
+                                if (mappedNutrientName in foodInfo.data){
+                                  lvl = foodInfo.data[mappedNutrientName];
+                                }
+                                if (lvl == null){
+                                  lvl = 100000;
+                                }
+
+                                if(lvl >= nutrient.threshold){
+                                  if (!(nutrient.name in conflicts)){
+                                    var nutriDiseases = [];
+                                    conflicts[nutrient.name] = nutriDiseases;
+
+                                  }
+                                  conflicts[nutrient.name].push({
+                                    name: disease.name,
+                                    threshold: nutrient.threshold,
+                                    realval: lvl,
+                                    percentage: (lvl / threshold) * 100,
+                                  });
+                                   
+                                }
+                              });
+                            });
+                            res.json({success: true, analyses: conflicts});
+                            
+                        }
+                    });
+                }
+            });
+
+
+          });
+
+
+        }
+      }
+    })
+  }
+})
 
 router.post('/nutrify', function(req, res){
     if(!req.body || !req.body.food){

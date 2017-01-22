@@ -12,6 +12,7 @@ var morgan = require('morgan');
 var session = require('express-session');
 var config = require('./config/database');
 var User = require('./app/models/user');
+var Disease = require('../app/models/disease');
 var jwt = require('jwt-simple');
 var NutritionixClient = require('nutritionix');
 var NUTRITIONIX_APPID = process.env.NUTRITIONIX_APPID;
