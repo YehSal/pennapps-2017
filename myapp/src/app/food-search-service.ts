@@ -21,15 +21,15 @@ export class FoodSearchService {
               });
   }
 
-  searchByItemId(id: string): Promise<Analysis> {
+  searchByItemId(foodid: string): Promise<Analysis> {
     let url = 'http://' + window.location.host + '/api/analyze';
-    let body = JSON.stringify({ id });
+    let body = JSON.stringify({ foodid });
     return this.http
               .post(url, body, { headers: contentHeaders })
               .toPromise()
               .then(response => {
                 console.log(response.json())
-                return response.json().data as Analysis
+                return response.json().data.analyses as Analysis
               })
               .catch(this.handleError);
   }

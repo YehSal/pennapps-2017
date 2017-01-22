@@ -12,10 +12,16 @@ import { FoodSearchService } from './food-search-service';
 })
 export class FoodAnalysisComponent implements OnInit {
   analysis: Analysis
+  diseasename: any
 
   constructor(private foodSearchService: FoodSearchService,
               private route: ActivatedRoute,
               private location: Location) {
+
+    this.diseasename = {};
+    this.diseasename["high_blood_pressure"] = "high blood pressure";
+    this.diseasename["diabetes"] = "diabetes";
+    this.diseasename["heart_disease"] = "heart disease";
   }
 
   ngOnInit(): void {
