@@ -113,7 +113,7 @@ router.post('/analyze', passport.authenticate('jwt', { session: false}), functio
           } else {
             var username = user.name;
             //res.json({success: true, msg: 'Welcome to your profile, ' + user.name + '!'});
-            
+
                 if(user.diseases.length == 0){
                   res.json({success: true, data: {analyses: [] }});
                 }else{
@@ -219,7 +219,7 @@ router.post('/analyze', passport.authenticate('jwt', { session: false}), functio
 
 
                 }
-              
+
           }
       });
     } else {
