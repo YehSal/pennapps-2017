@@ -1,0 +1,44 @@
+<div *ngIf="analysis">
+  <h2>Details!</h2>
+  <div>
+    <div class = "panel panel-danger" *ngIf="analysis?.fat">
+      <div class = "panel-heading">
+        <h2 class="panel-title">
+          <a data-toggle="collapse" href="#collapse1">This food has a lot of fat.</a>
+        </h2>
+      </div>
+      <div id="collapse1" class="panel-collapse collapse">
+        <div class = "panel-body">
+          <p>Due to the following conditions, we recommend not having this food because of its fat content.</p>
+          <div *ngFor="let factor of analysis.fat">
+            <ul>
+              <li><strong>Condition: {{diseasename[factor.name]}}</strong></li>
+              <li>Recommended threshold for this disease: {{factor.threshold}}mg</li>
+              <li>Amount in food: {{factor.realval}}mg ({{factor.threshold}}% of recommended threshold).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class = "panel panel-danger" *ngIf="analysis?.sodium">
+      <div class = "panel-heading">
+        <h2 class="panel-title">
+          <a data-toggle="collapse" href="#collapse2">This food has a lot of sodium.</a>
+        </h2>
+      </div>
+      <div id="collapse2" class="panel-collapse collapse">
+        <div class = "panel-body">
+          <p>Due to the following conditions, we recommend not having this food because of its fat content.</p>
+          <div *ngFor="let factor of analysis.sodium">
+            <ul>
+              <li><strong>Condition: {{diseasename[factor.name]}}</strong></li>
+              <li>Recommended threshold for this disease: {{factor.threshold}}mg</li>
+              <li>Amount in food: {{factor.realval}}mg ({{factor.threshold}}% of recommended threshold).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button (click)="goBack()">Back</button>
+</div>
