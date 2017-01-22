@@ -13,7 +13,13 @@ import { User } from './user'
 })
 
 export class ProfileComponent implements OnInit {
-  constructor(private http: Http) { }
+  diseasename: any
+  constructor(private http: Http) { 
+    this.diseasename = {};
+    this.diseasename["high_blood_pressure"] = "high blood pressure";
+    this.diseasename["diabetes"] = "diabetes";
+    this.diseasename["heart_disease"] = "heart disease";
+  }
 
   user: User;
   ngOnInit(): void {
