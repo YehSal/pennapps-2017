@@ -4,9 +4,10 @@ import { RouterModule, Routes } from '@angular/router';
 import { Home } from './home.component';
 import { Login } from './login.component';
 import { Signup } from './signup.component';
-import { FoodSearchComponent } from './food-search.component'
-import { FoodAnalysisComponent } from './food-analysis.component'
+import { FoodSearchComponent } from './food-search.component';
+import { FoodAnalysisComponent } from './food-analysis.component';
 import { AuthGuard } from './common/auth.guard';
+import { ProfileComponent } from './profile.component';
 
 const routes: Routes = [
   {
@@ -34,8 +35,12 @@ const routes: Routes = [
   {
     path: 'analyze/:id',
     component: FoodAnalysisComponent
+  },
+  {
+    path: 'profile',
+    component: ProfileComponent
   }
-]
+];
 
 @NgModule({
   imports: [ RouterModule.forRoot(routes) ],
