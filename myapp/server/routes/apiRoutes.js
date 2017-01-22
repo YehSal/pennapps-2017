@@ -6,6 +6,7 @@ var User = require('../app/models/user');
 var Disease = require('../app/models/disease');
 var jwt = require('jwt-simple');
 var config = require('../config/database');
+var request = require('request');
 const nutritionMap = {
   "fat": "nf_total_fat",
   "sodium": "nf_sodium",
@@ -93,7 +94,7 @@ router.post('/analyze', function(req, res){
   }else{
     console.log(req.body.userid);
     User.findOne({
-      name: req.body.name;
+      name: req.body.name
     }, function(err, user){
       if(err){
         console.log("Error finding user: " + err);
@@ -210,7 +211,6 @@ router.post('/foodsearch', (req, res) => {
   if (!req.body || !req.body.term) {
     res.json({ success: false, msg: "must include food to lookup"});
   } else {
-    console.log(req.body.term);
     request({
       url: "https://api.nutritionix.com/v1_1/search/" + req.body.term,
       qs: {
@@ -222,6 +222,7 @@ router.post('/foodsearch', (req, res) => {
       },
       method: "GET"
     }, (error, response, body) => {
+      console.log('here')
       if (error) {
         console.log('Error getting food descriptions: ', error);
         res.json({success: false, msg: "Error getting food descriptions: "+ error});
